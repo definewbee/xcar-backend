@@ -31,7 +31,6 @@ import java.util.concurrent.TimeUnit;
  * @author kris.wang
  */
 @Slf4j
-//@Component
 public class XracerStakingPoolEventsListener implements EventListener {
     @Autowired
     private Web3jService web3jService;
@@ -55,10 +54,7 @@ public class XracerStakingPoolEventsListener implements EventListener {
     private BigInteger startBlock;
 
 
-//    @Override
-//    @Async
-//    @Scheduled(cron = "${abey.scheduler.cron-expression}")
-//    @SchedulerLock(name = "XracerStakingPoolTaskLock")
+    @Override
     public void handle() throws IOException, InterruptedException {
         log.info("Begin to scan staking event...");
         BigInteger start = mapper.selectContractOffset(xRracerStakingPoolAddress);
