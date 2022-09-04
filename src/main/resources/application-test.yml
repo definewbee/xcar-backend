@@ -1,0 +1,53 @@
+spring:
+  mvc:
+    pathmath:
+      matching-strategy: ANT_PATH_MATCHER
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://localhost:3306/xcar?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: pNX3ETMEhmPMAL4Z
+    hikari:
+      minimum-idle: 5
+      idle-timeout: 600000
+      maximum-pool-size: 100
+      auto-commit: true
+      pool-name: XCarHikariCP
+      max-lifetime: 28770000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+      transaction:
+        rollback-on-commit-failure: true
+web3j:
+  client-address: https://rpc.abeychain.com
+  admin-client: false
+  httpTimeoutSeconds: 600
+
+abey:
+  contracts:
+    start: 8697104
+    step: 500
+    XCarNFT:
+      name: 'XCarNFT'
+      address: '0xdc479220ad98B5eaac308218Eb1d9a6d222F6fe0'
+      enabled: true
+    XracerStakingPool:
+      name: 'XracerStakingPool'
+      address: '0x829e62f57e243180605858548e0051D5582c3A51'
+      enabled: false
+    ReferrerControl:
+      name: 'ReferrerControl'
+      address: '0x6D18276e0DC29259Dc408B81a9F6eC2809156Cdb'
+      enabled: true
+    Upgrader:
+      name: 'Upgrader'
+      address: '0x842c08dEA9bFaAF9B2643b64799e33d4CD1E09E6'
+      enabled: false
+
+  scheduler:
+    enable: true
+    cron-expression: 0/10 * * * * ?
+
+
+

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.doeasy.xcar.mapper.UserNftCardsTransferMapper">
+
+    <resultMap id="userNftCardsTransferMap" type="io.doeasy.xcar.entity.UserNftCardsTransfer">
+        <result column="id" property="id"/>
+        <result column="tx_hash" property="txHash"/>
+        <result column="from_address" property="fromAddress"/>
+        <result column="to_address" property="toAddress"/>
+        <result column="token_id" property="tokenId"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="io.doeasy.xcar.entity.UserNftCardsTransfer" keyProperty="id">
+        INSERT IGNORE INTO user_nft_cards_transfer(
+            tx_hash,
+            from_address,
+            to_address,
+            token_id
+        ) VALUES (
+             #{txHash},
+             #{fromAddress},
+             #{toAddress},
+             #{tokenId}
+        )
+    </insert>
+</mapper>

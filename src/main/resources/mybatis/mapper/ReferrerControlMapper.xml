@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.doeasy.xcar.mapper.ReferrerControlMapper">
+
+    <resultMap id="referrerMap" type="io.doeasy.xcar.entity.Referrer">
+        <result column="id" property="id"/>
+        <result column="tx_hash" property="txHash"/>
+        <result column="referrer_address" property="referrerAddress"/>
+        <result column="referal_address" property="referalAddress"/>
+        <result column="is_actived" property="isActived"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <resultMap id="referrerQueryResponseVoMap" type="io.doeasy.xcar.vo.response.ReferrerQueryResponseVo">
+        <result column="referrer" property="referrer"/>
+        <result column="cnt" property="count"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="io.doeasy.xcar.entity.Referrer" keyProperty="id">
+        INSERT IGNORE INTO t_referrer(tx_hash,referrer_address, referal_address)
+            VALUES(#{txHash}, #{referrerAddress}, #{referalAddress})
+    </insert>
+
+    <update id="update" parameterType="io.doeasy.xcar.entity.Referrer">
+        UPDATE t_referrer SET is_actived = true
+            WHERE  referal_address = #{referalAddress} and referrer_address = #{referrerAddress}
+    </update>
+
+    <select id="listTopnReferres" parameterType="io.doeasy.xcar.vo.request.ReferrerQueryRequestVo" resultMap="referrerQueryResponseVoMap">
+        (SELECT t.r as referrer, COUNT(t.ra) as cnt, t.a
+        FROM (
+                 SELECT DISTINCT referrer_address AS r, referal_address AS ra, is_actived AS a
+                 FROM t_referrer
+                 WHERE is_actived = 1 and created_at
+                     BETWEEN str_to_date(#{startDate}, '%m/%d/%Y') AND
+                     date_add(str_to_date(#{startDate}, '%m/%d/%Y'), INTERVAL #{interval} DAY)
+             ) t
+        GROUP BY r, a)
+        UNION
+        (SELECT t.r as referrer, COUNT(t.ra) as cnt, t.a
+         FROM (
+                  SELECT DISTINCT referrer_address AS r, referal_address AS ra, is_actived AS a
+                  FROM t_referrer
+                  WHERE created_at
+                            BETWEEN str_to_date(#{startDate}, '%m/%d/%Y') AND
+                            date_add(str_to_date(#{startDate}, '%m/%d/%Y'), INTERVAL #{interval} DAY)
+              ) t
+         GROUP BY r,a )
+        order by cnt
+        desc
+        LIMIT 0, #{topN};
+    </select>
+</mapper>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.doeasy.xcar.mapper.ContractOffsetMapper">
+
+    <resultMap id="contractOffsetMap" type="io.doeasy.xcar.entity.ContractOffset">
+        <result column="contract_address" property="contractAddress"/>
+        <result column="contract_name" property="contractName"/>
+        <result column="block_offset" property="blockOffset"/>
+        <result column="recorded_at" property="recordedAt"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="io.doeasy.xcar.entity.ContractOffset" keyProperty="contract_address">
+        INSERT IGNORE INTO conract_offset(contract_address, block_offset) VALUES (#{contractAddress}, #{blockOffset})
+    </insert>
+
+    <update id="update" parameterType="io.doeasy.xcar.entity.ContractOffset" keyProperty="contract_address">
+        UPDATE contract_offset set block_offset = #{blockOffset}
+            where contract_address = #{contractAddress} and
+                  contract_name = #{contractName}
+    </update>
+
+    <select id="selectOneByMap" parameterType="java.util.Map" resultMap = "contractOffsetMap">
+        SELECT * FROM contract_offset where contract_address = #{contractAddress}
+    </select>
+
+    <select id="selectContractOffset" parameterType="String" resultType="java.math.BigInteger" >
+        SELECT block_offset FROM contract_offset where contract_address = #{contractAddress}
+    </select>
+</mapper>

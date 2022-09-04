@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.doeasy.xcar.mapper.UserNftCardsMapper">
+
+    <resultMap id="userNftCardsMap" type="io.doeasy.xcar.entity.UserNftCards">
+        <result column="id" property="id"/>
+        <result column="owner_address" property="ownerAddress"/>
+        <result column="tx_hash" property="txHash"/>
+        <result column="token_id" property="tokenId"/>
+        <result column="pool_id" property="poolId"/>
+        <result column="rarity" property="rarity"/>
+        <result column="level" property="level"/>
+        <result column="speed" property="speed"/>
+        <result column="is_staked" property="isStaked"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <sql id="page_query_sql">
+        <where>
+            <if test="entity.id != null">
+                AND id = #{entity.id}
+            </if>
+            <if test="entity.ownerAddress != null and entity.ownerAddress != ''">
+                AND owner_address = #{entity.ownerAddress}
+            </if>
+            <if test="entity.txHash != null and entity.txHash != ''">
+                AND tx_hash = #{entity.txHash}
+            </if>
+            <if test="entity.tokenId != null">
+                AND token_id = #{entity.tokenId}
+            </if>
+            <if test="entity.poolId != null">
+                AND pool_id = #{entity.poolId}
+            </if>
+            <if test="entity.rarity != null">
+                AND rarity = #{entity.rarity}
+            </if>
+            <if test="entity.level != null">
+                AND level = #{entity.level}
+            </if>
+            <if test="entity.speed != null">
+                AND speed = #{entity.speed}
+            </if>
+            <if test="entity.isStaked != null">
+                AND is_staked = #{entity.isStaked}
+            </if>
+            <if test="entity.createdAt != null">
+                AND created_at = #{entity.createdAt}
+            </if>
+            <if test="entity.updatedAt != null">
+                AND updated_at = #{entity.updatedAt}
+            </if>
+            <if test="fuzzySearchItemList != null">
+                <foreach collection="fuzzySearchItemList" index="index" item="item" open="" separator="" close="">
+                    <if test="item.colName == 'userAddress'  and item.fuzzyValue !=null">
+                        AND user_address like '%#{item.fuzzyValue}%'
+                    </if>
+                    <if test="item.colName == 'txHash'  and item.fuzzyValue !=null">
+                        AND tx_hash like '%#{item.fuzzyValue}%'
+                    </if>
+                    <if test="item.colName == 'tokenId'  and item.fuzzyValue !=null">
+                        AND token_id like '%#{item.fuzzyValue}%'
+                    </if>
+                    <if test="item.colName == 'poolId'  and item.fuzzyValue !=null">
+                        AND token_id like '%#{item.fuzzyValue}%'
+                    </if>
+                    <if test="item.colName == 'rarity'  and item.fuzzyValue !=null">
+                        AND rarity like '%#{item.fuzzyValue}%'
+                    </if>
+                    <if test="item.colName == 'level'  and item.fuzzyValue !=null">
+                        AND level like '%#{item.fuzzyValue}%'
+                    </if>
+                    <if test="item.colName == 'speed'  and item.fuzzyValue !=null">
+                        AND speed like '%#{item.fuzzyValue}%'
+                    </if>
+                    <if test="item.colName == 'isStaked'  and item.fuzzyValue !=null">
+                        AND speed like '%#{item.fuzzyValue}%'
+                    </if>
+                    <if test="item.colName == 'createdAt'  and item.fuzzyValue !=null">
+                        AND created_at like '%#{item.fuzzyValue}%'
+                    </if>
+                    <if test="item.colName == 'updatedAt'  and item.fuzzyValue !=null">
+                        AND updated_at like '%#{item.fuzzyValue}%'
+                    </if>
+                </foreach>
+            </if>
+        </where>
+    </sql>
+
+    <select id="count" resultType="long">
+        SELECT COUNT(1)
+        FROM user_nft_cards
+        <include refid="page_query_sql" />
+    </select>
+
+    <insert id="insert" parameterType="io.doeasy.xcar.entity.UserNftCards" keyProperty="id">
+        INSERT IGNORE INTO user_nft_cards(
+            owner_address,
+            tx_hash,
+            token_id,
+            rarity,
+            level,
+            speed
+        ) VALUES (
+          #{ownerAddress},
+          #{txHash},
+          #{tokenId},
+          #{rarity},
+          #{level},
+          #{speed}
+        )
+    </insert>
+
+    <select id="selectOneByMap" resultMap="userNftCardsMap" parameterType="java.util.Map">
+        SELECT
+         *
+        FROM user_nft_cards
+        WHERE owner_address = #{ownerAddress} and token_id = #{tokenId}
+    </select>
+
+    <select id="listPage" resultMap="userNftCardsMap">
+        SELECT * FROM
+              user_nft_cards
+        <include refid="page_query_sql" />
+        <if test="offset != null and pageSize != null">
+              limit #{offset}, #{pageSize}
+        </if>
+    </select>
+
+    <update id="updateStakedStatus" parameterType="java.util.Map">
+        UPDATE user_nft_cards SET
+              is_staked=true, pool_id=#{poolId}
+        WHERE token_id = #{tokenId} and owner_address = #{ownerAddress}
+    </update>
+
+    <update id="upgrade">
+        UPDATE user_nft_cards SET level = #{targetLevel}, speed = #{targetSpeed}
+        WHERE
+              token_id = #{tokenId} and
+              owner_address = #{ownerAddress}
+    </update>
+
+    <delete id="deleteByCondition" parameterType="java.util.Map">
+        DELETE FROM user_nft_cards WHERE owner_address = #{ownerAddress} and token_id = #{tokenId}
+    </delete>
+
+</mapper>

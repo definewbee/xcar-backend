@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.doeasy.xcar.mapper.UserNftCardsStakingMapper">
+
+    <resultMap id="userNftCardsStakingMap" type="io.doeasy.xcar.entity.UserNftCardsStaking">
+        <result column="id" property="id"/>
+        <result column="owner_address" property="ownerAddress"/>
+        <result column="tx_hash" property="txHash"/>
+        <result column="token_id" property="tokenId"/>
+        <result column="pool_id" property="poolId"/>
+        <result column="event_id" property="event"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="io.doeasy.xcar.entity.UserNftCardsStaking" keyProperty="id">
+        INSERT IGNORE INTO user_nft_cards_staking(
+            owner_address,
+            tx_hash,
+            token_id,
+            pool_id,
+            event
+        ) VALUES (
+             #{ownerAddress},
+             #{txHash},
+             #{tokenId},
+             #{poolId},
+             #{event}
+        )
+    </insert>
+</mapper>
